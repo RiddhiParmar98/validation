@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import UserContext from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
+import Image from "./Image";
 
 export const UserPage = () => {
   const {
@@ -10,7 +11,9 @@ export const UserPage = () => {
     setIsEdit,
     setUpdateData,
     setSelectFile,
+    preview,
     setPreview,
+
   } = useContext(UserContext);
   let navigate = useNavigate();
 
@@ -55,6 +58,7 @@ export const UserPage = () => {
               <th scope="col">Gender</th>
               <th scope="col">Language</th>
               <th scope="col">Intrested Area</th>
+              <th scope="col">Preview Image</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
@@ -67,6 +71,7 @@ export const UserPage = () => {
                   handleDelete={handleDelete}
                   handleUpdate={handleUpdate}
                   key={index}
+                  preview={preview}
                 />
               ))}
           </tbody>
@@ -79,7 +84,7 @@ export const UserPage = () => {
 export default UserPage;
 
 export const UserItem = (props) => {
-  const { fullName, email, gender, language, intrestedArea, user_id } =
+  const { fullName, email, gender, language, intrestedArea, user_id ,imageURL} =
     props.data;
   const { handleDelete, handleUpdate } = props;
   return (
@@ -90,6 +95,7 @@ export const UserItem = (props) => {
       <td>{gender}</td>
       <td>{language.join(", ")}</td>
       <td>{intrestedArea.join(", ")}</td>
+      <td><Image src={imageURL} style={{width:"80px",height : "80px"}} alt="no preview available"/></td>
 
       <td>
         <Button
