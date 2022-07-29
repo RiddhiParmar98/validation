@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.textbox,.dropdown,.fileUpload
+{
+  width: 50%;
+  margin: 10px 0px;
+  height: 35px;
+}
+
+label{
+  font-weight: bold;
+  font-size: large;
+}
+img
+{
+  height: 100px;
+  width: 100px;
+}

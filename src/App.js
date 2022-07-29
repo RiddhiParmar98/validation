@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import SimpleForm from "./Component/SimpleForm";
+import UserProvider from "./context/UserProvider";
+import UserPage from "./Component/UserPage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
+  const publicRoute = [
+    { path: "/", component: <SimpleForm /> },
+    { path: "/add-user", component: <SimpleForm /> },
+    { path: "/edit-user/:id", component: <SimpleForm isEdit /> },
+    { path: "/userpage", component: <UserPage /> },
+  ];
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserProvider>
+      <BrowserRouter>
+        <div className="container">
+          <Routes>
+            {publicRoute.map(({ path, component }, idx) => (
+              <Route key={idx} exact {...{ path, element: component }} />
+            ))}
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
 
