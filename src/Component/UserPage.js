@@ -15,7 +15,6 @@ export const UserPage = () => {
     setPreview,
   } = useContext(UserContext);
   let navigate = useNavigate();
-
   const handleDelete = (id) => {
     const filterData = userData.filter((data, index) => data.user_id !== id);
     setUserData(filterData);

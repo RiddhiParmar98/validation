@@ -19,7 +19,7 @@ const UserProvider = (props) => {
       },
       user_id: "id4085d45fc5c86",
       imageUrl:
-        "blob:http://localhost:3000/7c4fe3a1-8c9a-41bb-b527-2ad309441b7c",
+        "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/surprising-flower-meanings-balloon-flowers-1650767465.jpg",
     },
     {
       email: "fecito@mailinator.com",
@@ -37,7 +37,7 @@ const UserProvider = (props) => {
       },
       user_id: "id9fbdb0fada2c4",
       imageUrl:
-        "blob:http://localhost:3000/7c4fe3a1-8c9a-41bb-b527-2ad309441b7c",
+        "https://cdn.pixabay.com/photo/2013/07/21/13/00/rose-165819__340.jpg",
     },
   ];
   const [userData, setUserData] = useState(dummyData);
