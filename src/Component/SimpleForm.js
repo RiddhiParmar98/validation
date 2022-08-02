@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useContext } from "react";
@@ -12,6 +12,8 @@ import Checkbox from "./Checkbox";
 import Select from "./Select";
 import File from "./File";
 import Image from "./Image";
+import ReactCrop from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 
 const SimpleForm = () => {
   const {
@@ -27,6 +29,14 @@ const SimpleForm = () => {
   let navigate = useNavigate();
   const location = useLocation();
 
+  const [crop, setCrop] = useState({
+    unit: "%",
+    width: 30,
+    height: 30,
+    aspect: 16 / 9,
+  });
+  const [imageResult, setImageResult] = useState(null);
+
   const FILE_SIZE = 1024 * 1024;
   const SUPPORTED_FORMATS = [
     "image/jpg",
@@ -36,12 +46,12 @@ const SimpleForm = () => {
   ];
 
   const radiOptions = [
-    { key: "male", value: "Male" },
-    { key: "female", value: "Female" },
+    { key: "Male", value: "Male" },
+    { key: "Female", value: "Female" },
   ];
 
   const checkBoxOptions = [
-    { key: "Javasript", value: "Javasript" },
+    { key: "Javascript", value: "Javascript" },
     { key: "Python", value: "Python" },
     { key: "PHP", value: "PHP" },
     { key: "JAVA", value: "JAVA" },
@@ -49,11 +59,11 @@ const SimpleForm = () => {
 
   const areaOption = [
     { key: "Select an option", value: "" },
-    { key: "programming", value: "Programming" },
-    { key: "designing", value: "Designing" },
-    { key: "management", value: "Management" },
-    { key: "frontEnd", value: "FrontEnd" },
-    { key: "backEnd", value: "BackEnd" },
+    { key: "Programming", value: "Programming" },
+    { key: "Designing", value: "Designing" },
+    { key: "Management", value: "Management" },
+    { key: "FrontEnd", value: "FrontEnd" },
+    { key: "BackEnd", value: "BackEnd" },
   ];
 
   useEffect(() => {
@@ -61,7 +71,6 @@ const SimpleForm = () => {
       setPreview(undefined);
       return;
     }
-
     if (isEdit) {
       setSelectFile(updateData.uploadFile);
     }
@@ -70,13 +79,74 @@ const SimpleForm = () => {
   }, []);
 
   const previewData = (file) => {
+    if (file && file.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setImageResult(reader.result);
+        reader.readAsDataURL(file);
+      });
+    }
     const objectURL = URL.createObjectURL(file);
-    console.log("AdddSelectFile", file);
     setPreview(objectURL);
   };
 
+  const makeCroppedImage = async () => {
+    const uploadImage = document.getElementById("uploadImage");
+    if (uploadImage && crop.width && crop.height) {
+      const croppedImageURL = await getCroppedImage(
+        uploadImage,
+        crop,
+        selectFile.name
+      );
+      setImageResult(croppedImageURL);
+    }
+  };
+
+  const getCroppedImage = (image, crop, fileName) => {
+    const canvas = document.createElement("canvas");
+    const pixelsRatio = window.devicePixelRatio;
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = crop.width * pixelsRatio * scaleX;
+    canvas.height = crop.height * pixelsRatio * scaleY;
+    ctx.setTransform(pixelsRatio, 0, 0, pixelsRatio, 0, 0);
+    ctx.imageSmoothingQuality = "high";
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width * scaleX,
+      crop.height * scaleY
+    );
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            //reject(new Error('Canvas is empty'));
+            console.error("Canvas is empty");
+            return;
+          }
+          blob.name = fileName;
+          setSelectFile(blob);
+          const fileUrl = window.URL.createObjectURL(blob);
+          resolve(fileUrl);
+        },
+        "image/jpeg",
+        1
+      );
+    });
+  };
   const initialValues = isEdit
-    ? { ...updateData, } : {
+    ? { ...updateData }
+    : {
         fullName: "",
         email: "",
         password: "",
@@ -85,6 +155,7 @@ const SimpleForm = () => {
         language: [],
         intrestedArea: [],
         uploadFile: "",
+        imageUrl: preview,
       };
 
   const validationSchema = Yup.object({
@@ -121,11 +192,12 @@ const SimpleForm = () => {
 
   const handleSubmit = (values, { setSubmitting }) => {
     const user_id = "id" + Math.random().toString(16).slice(2);
-    const newData = { ...values, user_id };
-    console.log();
+    const newData = {
+      ...values,
+      user_id,
+      imageUrl: imageResult ? imageResult : preview,
+    };
     if (isEdit) {
-      console.log("editData", newData);
-      console.log("updateData", updateData);
       const index = userData?.findIndex(
         (value) => value?.user_id === location?.state?.id
       );
@@ -158,24 +230,13 @@ const SimpleForm = () => {
             encType="multipart/form-data"
           >
             <Label htmlFor="fullName" value="Enter Full Name" id="fullName" />
-            <Input
-              className="form-control"
-              control="input"
-              type="text"
-              name="fullName"
-            />
+            <Input className="form-control" type="text" name="fullName" />
             <Label htmlFor="email" value="Enter Email" id="email" />
-            <Input
-              className="form-control"
-              control="input"
-              type="email"
-              name="email"
-            />
+            <Input className="form-control" type="email" name="email" />
 
-            <Label htmlFor="password" value="Enter password" id="password" />
+            <Label htmlFor="password" value="Enter Password" id="password" />
             <Input
               className="form-control"
-              control="input"
               type="password"
               label="Enter Password"
               name="password"
@@ -185,34 +246,29 @@ const SimpleForm = () => {
             <Radio control="radio" name="gender" options={radiOptions} />
 
             <Label
-              value="Choose Your Favriout Launguage"
+              value="Choose Your Favorite Language"
               htmlFor="Language"
               id="language"
             />
-            <Checkbox
-              control="checkbox"
-              name="language"
-              options={checkBoxOptions}
-            />
+            <Checkbox name="language" options={checkBoxOptions} />
 
             <Label
-              value="Intrested Area "
+              value="Interested Area "
               htmlFor="intrestedArea"
               id="intrestedArea"
             />
             <Select
               className="form-control"
-              control="select"
               name="intrestedArea"
               options={areaOption}
             />
 
             <Label value="Upload File" htmlFor="uploadFile" id="uploadFile" />
             <File
-              control="file"
               className="form-control"
               type="file"
               name="uploadFile"
+              accept="image/*"
               onChange={(e) => {
                 formik.setFieldValue("uploadFile", e.target.files[0]);
                 setSelectFile(e.target.files[0]);
@@ -220,22 +276,52 @@ const SimpleForm = () => {
               }}
             />
 
-            {selectFile && <Image src={preview} alt="no preview available" />}
+            {selectFile && (
+              <React.Fragment>
+                <ReactCrop
+                  src={preview}
+                  crop={crop}
+                  onImageLoaded={setSelectFile}
+                  onChange={setCrop}
+                  onComplete={makeCroppedImage}
+                >
+                  <Image
+                    src={preview}
+                    alt="no preview available"
+                    id="uploadImage"
+                    style={{ height: "300px", width: "300px" }}
+                  />
+                </ReactCrop>
+              </React.Fragment>
+            )}
 
-            <Button
-              className="btn btn-primary"
-              type="submit"
-              name={`${isEdit ? "Edit" : "Submit"} `}
-            />
+            {imageResult && (
+              <div className="mb-3">
+                <Image
+                  src={imageResult}
+                  id="croppedImage"
+                  alt="new cropped image"
+                  style={{ height: "300px", width: "300px" }}
+                />
+              </div>
+            )}
 
-            <Button
-              className="btn btn-danger mx-2"
-              type="button"
-              name="cancel"
-              handleOnClick={() => {
-                navigate("/userpage");
-              }}
-            />
+            <div className="mb-3">
+              <Button
+                className="btn btn-primary"
+                type="submit"
+                name={`${isEdit ? "Edit" : "Submit"} `}
+              />
+
+              <Button
+                className="btn btn-danger mx-2"
+                type="button"
+                name="cancel"
+                handleOnClick={() => {
+                  navigate("/userpage");
+                }}
+              />
+            </div>
           </form>
         )}
       </Formik>

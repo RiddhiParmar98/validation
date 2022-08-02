@@ -13,11 +13,8 @@ export const UserPage = () => {
     setSelectFile,
     preview,
     setPreview,
-
   } = useContext(UserContext);
   let navigate = useNavigate();
-
-  console.log("userdataaa", userData);
 
   const handleDelete = (id) => {
     const filterData = userData.filter((data, index) => data.user_id !== id);
@@ -84,8 +81,15 @@ export const UserPage = () => {
 export default UserPage;
 
 export const UserItem = (props) => {
-  const { fullName, email, gender, language, intrestedArea, user_id ,imageURL} =
-    props.data;
+  const {
+    fullName,
+    email,
+    gender,
+    language,
+    intrestedArea,
+    user_id,
+    imageUrl,
+  } = props.data;
   const { handleDelete, handleUpdate } = props;
   return (
     <tr>
@@ -95,7 +99,13 @@ export const UserItem = (props) => {
       <td>{gender}</td>
       <td>{language.join(", ")}</td>
       <td>{intrestedArea.join(", ")}</td>
-      <td><Image src={imageURL} style={{width:"80px",height : "80px"}} alt="no preview available"/></td>
+      <td>
+        <Image
+          src={imageUrl}
+          style={{ width: "80px", height: "80px" }}
+          alt="no preview available"
+        />
+      </td>
 
       <td>
         <Button

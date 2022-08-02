@@ -2,7 +2,6 @@ import React from "react";
 import { Field, ErrorMessage } from "formik";
 import TextError from "./TextError";
 
-
 function Checkbox(props) {
   const { name, options, ...rest } = props;
 
@@ -21,7 +20,10 @@ function Checkbox(props) {
                   checked={field.value.includes(option.value)}
                 />{" "}
                 &nbsp;
-                <label htmlFor={option.value}> {option.key}&nbsp;</label>
+                <label style={{ fontWeight: "normal" }} htmlFor={option.value}>
+                  {" "}
+                  {option.key}&nbsp;
+                </label>
                 <br />
               </React.Fragment>
             );

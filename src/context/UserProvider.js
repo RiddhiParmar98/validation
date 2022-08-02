@@ -18,6 +18,8 @@ const UserProvider = (props) => {
         lastModified: 1658301396037,
       },
       user_id: "id4085d45fc5c86",
+      imageUrl:
+        "blob:http://localhost:3000/7c4fe3a1-8c9a-41bb-b527-2ad309441b7c",
     },
     {
       email: "fecito@mailinator.com",
@@ -34,6 +36,8 @@ const UserProvider = (props) => {
         lastModified: 1658301588284,
       },
       user_id: "id9fbdb0fada2c4",
+      imageUrl:
+        "blob:http://localhost:3000/7c4fe3a1-8c9a-41bb-b527-2ad309441b7c",
     },
   ];
   const [userData, setUserData] = useState(dummyData);

@@ -19,7 +19,10 @@ function Radio(props) {
                   checked={field.value === option.value}
                 />{" "}
                 &nbsp;
-                <label htmlFor={option.value}> {option.key}&nbsp;</label>
+                <label style={{ fontWeight: "normal" }} htmlFor={option.value}>
+                  {" "}
+                  {option.key}&nbsp;
+                </label>
               </React.Fragment>
             );
           });
