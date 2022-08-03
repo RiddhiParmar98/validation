@@ -25,7 +25,7 @@ const UserProvider = (props) => {
       email: "fecito@mailinator.com",
       fullName: "Kato Cantrell",
       gender: "Male",
-      intrestedArea: ["BackEnd"],
+      intrestedArea: ["Backnd"],
       language: ["Javasript", "Python", "JAVA"],
       password: "Pa$$w0rd!",
       toggle: false,
@@ -59,6 +59,7 @@ const UserProvider = (props) => {
         setSelectFile,
         preview,
         setPreview,
+        dummyData
       }}
     >
       {props.children}

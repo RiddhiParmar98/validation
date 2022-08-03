@@ -25,6 +25,8 @@ const SimpleForm = () => {
     setSelectFile,
     preview,
     setPreview,
+    setUpdateData,
+    dummyData,
   } = useContext(UserContext);
   let navigate = useNavigate();
   const location = useLocation();
@@ -144,7 +146,8 @@ const SimpleForm = () => {
       );
     });
   };
-  const initialValues = isEdit
+
+  let initialValues = isEdit
     ? { ...updateData }
     : {
         fullName: "",
@@ -155,8 +158,15 @@ const SimpleForm = () => {
         language: [],
         intrestedArea: [],
         uploadFile: "",
-        imageUrl: preview,
+        imageUrl: "",
       };
+
+  if (location?.state?.id && !isEdit) {
+    let index = userData.findIndex(
+      (data) => data?.user_id === location?.state?.id
+    );
+    initialValues = { ...userData[index < 0 ? 0 : index] };
+  }
 
   const validationSchema = Yup.object({
     fullName: Yup.string()
@@ -243,7 +253,7 @@ const SimpleForm = () => {
             />
 
             <Label htmlFor="gender" value="Gender" id="gender" />
-            <Radio control="radio" name="gender" options={radiOptions} />
+            <Radio name="gender" options={radiOptions} />
 
             <Label
               value="Choose Your Favorite Language"
@@ -310,7 +320,7 @@ const SimpleForm = () => {
               <Button
                 className="btn btn-primary"
                 type="submit"
-                name={`${isEdit ? "Edit" : "Submit"} `}
+                name={`${isEdit ? "Update" : "Submit"} `}
               />
 
               <Button

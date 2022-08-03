@@ -14,6 +14,7 @@ function App() {
     <UserProvider>
       <BrowserRouter>
         <div className="container">
+        
           <Routes>
             {publicRoute.map(({ path, component }, idx) => (
               <Route key={idx} exact {...{ path, element: component }} />

@@ -3,8 +3,10 @@ import UserContext from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import Image from "./Image";
+// import Modal from "./Modal";
 
 export const UserPage = () => {
+  // const [isShowModal, setIsShowModal] = useState(false);
   const {
     userData,
     setUserData,
@@ -15,10 +17,17 @@ export const UserPage = () => {
     setPreview,
   } = useContext(UserContext);
   let navigate = useNavigate();
+
   const handleDelete = (id) => {
-    const filterData = userData.filter((data, index) => data.user_id !== id);
-    setUserData(filterData);
-    localStorage.setItem("userData", JSON.stringify(filterData));
+    
+    var msj='Are you sure that you want to delete this comment?';
+    if (!window.confirm(msj)) { 
+       return false;
+    } else {
+      const filterData = userData.filter((data, index) => data.user_id !== id);
+      setUserData(filterData);
+    }    
+   
   };
 
   const handleUpdate = (id) => {
@@ -31,9 +40,9 @@ export const UserPage = () => {
 
   return (
     <>
+      {/* {isShowModal && } */}
       <div className="container">
         <h2 className="my-4">User Details</h2>
-
         <Button
           className="btn btn-success my-2"
           handleOnClick={() => {
@@ -90,6 +99,7 @@ export const UserItem = (props) => {
     imageUrl,
   } = props.data;
   const { handleDelete, handleUpdate } = props;
+ 
   return (
     <tr>
       <th scope="row">{props.id}</th>
@@ -103,6 +113,7 @@ export const UserItem = (props) => {
           src={imageUrl}
           style={{ width: "80px", height: "80px" }}
           alt="no preview available"
+          id="imageUrl"
         />
       </td>
 
