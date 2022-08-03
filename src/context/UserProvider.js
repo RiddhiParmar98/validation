@@ -59,7 +59,7 @@ const UserProvider = (props) => {
         setSelectFile,
         preview,
         setPreview,
-        dummyData
+        dummyData,
       }}
     >
       {props.children}

@@ -19,15 +19,13 @@ export const UserPage = () => {
   let navigate = useNavigate();
 
   const handleDelete = (id) => {
-    
-    var msj='Are you sure that you want to delete this comment?';
-    if (!window.confirm(msj)) { 
-       return false;
+    var msj = "Are you sure that you want to delete this comment?";
+    if (!window.confirm(msj)) {
+      return false;
     } else {
       const filterData = userData.filter((data, index) => data.user_id !== id);
       setUserData(filterData);
-    }    
-   
+    }
   };
 
   const handleUpdate = (id) => {
@@ -99,7 +97,7 @@ export const UserItem = (props) => {
     imageUrl,
   } = props.data;
   const { handleDelete, handleUpdate } = props;
- 
+
   return (
     <tr>
       <th scope="row">{props.id}</th>
