@@ -25,8 +25,6 @@ const SimpleForm = () => {
     setSelectFile,
     preview,
     setPreview,
-    setUpdateData,
-    dummyData,
   } = useContext(UserContext);
   let navigate = useNavigate();
   const location = useLocation();
@@ -38,7 +36,7 @@ const SimpleForm = () => {
     aspect: 16 / 9,
   });
   const [imageResult, setImageResult] = useState(null);
-
+  
   const FILE_SIZE = 1024 * 1024;
   const SUPPORTED_FORMATS = [
     "image/jpg",
