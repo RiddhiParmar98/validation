@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useContext } from "react";
@@ -11,9 +11,9 @@ import Radio from "./Radio";
 import Checkbox from "./Checkbox";
 import Select from "./Select";
 import File from "./File";
-import Image from "./Image";
-import ReactCrop from "react-image-crop";
+
 import "react-image-crop/dist/ReactCrop.css";
+import UploadImageItem from "./UploadImageItem";
 
 const SimpleForm = () => {
   const {
@@ -21,29 +21,33 @@ const SimpleForm = () => {
     setUserData,
     isEdit,
     updateData,
-    selectFile,
     setSelectFile,
-    preview,
-    setPreview,
+    crop,
+    setUpdateData,
+    uploadIndex,
+    setUploadIndex,
   } = useContext(UserContext);
   let navigate = useNavigate();
   const location = useLocation();
 
-  const [crop, setCrop] = useState({
-    unit: "%",
-    width: 30,
-    height: 30,
-    aspect: 16 / 9,
-  });
-  const [imageResult, setImageResult] = useState(null);
-  
-  const FILE_SIZE = 1024 * 1024;
-  const SUPPORTED_FORMATS = [
-    "image/jpg",
-    "image/jpeg",
-    "image/gif",
-    "image/png",
-  ];
+  const [imageResult, setImageResult] = useState([]);
+  const [mainImageData, setMainImageData] = useState([]);
+  const [uploadFiles, setUploadFiles] = useState([]);
+  const hiddenFileInput = useRef(null);
+
+  useEffect(() => {
+    if (isEdit) {
+      setMainImageData([...updateData?.uploadFile]);
+    }
+    // eslint-disable-next-line
+  }, []);
+  // const FILE_SIZE = 1024 * 1024;
+  // const SUPPORTED_FORMATS = [
+  //   "image/jpg",
+  //   "image/jpeg",
+  //   "image/gif",
+  //   "image/png",
+  // ];
 
   const radiOptions = [
     { key: "Male", value: "Male" },
@@ -66,39 +70,23 @@ const SimpleForm = () => {
     { key: "BackEnd", value: "BackEnd" },
   ];
 
-  useEffect(() => {
-    if (!selectFile) {
-      setPreview(undefined);
-      return;
-    }
-    if (isEdit) {
-      setSelectFile(updateData.uploadFile);
-    }
-    previewData(selectFile);
-    // eslint-disable-next-line
-  }, []);
-
-  const previewData = (file) => {
-    if (file && file.length > 0) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        setImageResult(reader.result);
-        reader.readAsDataURL(file);
-      });
-    }
-    const objectURL = URL.createObjectURL(file);
-    setPreview(objectURL);
-  };
-
-  const makeCroppedImage = async () => {
-    const uploadImage = document.getElementById("uploadImage");
-    if (uploadImage && crop.width && crop.height) {
+  const makeCroppedImage = async (e, index) => {
+    const uploadImage = document.getElementById(index);
+    const cloneUploadData = [...uploadFiles];
+    if (uploadImage && crop[index]?.width && crop[index]?.height) {
+      const cloneData = [...imageResult];
       const croppedImageURL = await getCroppedImage(
         uploadImage,
-        crop,
-        selectFile.name
+        crop[index],
+        "abc.jpg"
       );
-      setImageResult(croppedImageURL);
+      cloneData[index] = croppedImageURL;
+      cloneUploadData[index] = {
+        ...cloneUploadData[index],
+        croppedUrl: croppedImageURL,
+      };
+      setImageResult(cloneData);
+      setUploadFiles(cloneUploadData);
     }
   };
 
@@ -135,7 +123,7 @@ const SimpleForm = () => {
             return;
           }
           blob.name = fileName;
-          setSelectFile(blob);
+
           const fileUrl = window.URL.createObjectURL(blob);
           resolve(fileUrl);
         },
@@ -155,9 +143,56 @@ const SimpleForm = () => {
         toggle: false,
         language: [],
         intrestedArea: [],
-        uploadFile: "",
+        uploadFile: [],
         imageUrl: "",
       };
+
+  const handleFileUpload = (e) => {
+    const { files } = e.target;
+    const cloneData = [...uploadFiles];
+
+    if (files && files[0]) {
+      const url = URL.createObjectURL(files[0]);
+      const file = files[0];
+      cloneData.push({ url, file });
+      setUploadFiles(cloneData);
+      if (isEdit) {
+        const newData = [...updateData?.uploadFile];
+        newData.push({ croppedUrl: url, file });
+        setUpdateData({
+          ...updateData,
+          uploadFile: newData,
+        });
+      }
+    }
+  };
+
+  const HandleImageDelete = (e, index) => {
+    let msg = "Are you sure you want to Delete ?";
+    if (!window.confirm(msg)) return false;
+    else {
+      if (isEdit) {
+        const cloneData = { ...updateData };
+        const { uploadFile } = cloneData;
+        uploadFile?.splice(index, 1);
+        mainImageData?.splice(index, 1);
+        setUpdateData(cloneData);
+        const newImageResult = [...imageResult];
+        newImageResult.splice(index, 1);
+        uploadIndex.splice(index,1);
+        setImageResult(newImageResult);
+      } else {
+        const cloneData = [...uploadFiles];
+        cloneData.splice(index, 1);
+        mainImageData?.splice(index, 1);
+        uploadIndex.splice(index,1);
+        setUploadFiles(cloneData);
+      }
+      const newImageResult = [...imageResult];
+      newImageResult.splice(index, 1);
+      setImageResult(newImageResult);
+    }
+  };
 
   if (location?.state?.id && !isEdit) {
     let index = userData.findIndex(
@@ -180,30 +215,29 @@ const SimpleForm = () => {
       .min(1)
       .of(Yup.string().required())
       .required("Required"),
-    uploadFile: Yup.mixed()
-      .required("A file is required")
-      .test(
-        "fileSize",
-        "File too large",
-        (value) => value && value.size <= FILE_SIZE
-      )
-      .test(
-        "fileFormat",
-        "Unsupported Format",
-        (value) => value && SUPPORTED_FORMATS.includes(value.type)
-      ),
+    uploadFile: Yup.mixed(),
+    // .required("A file is required")
+    // .test(
+    //   "fileSize",
+    //   "File too large",
+    //   (value) => console.log('value :>> ', value)
+    // )
+    // .test(
+    //   "fileFormat",
+    //   "Unsupported Format",
+    //   (value) => value && SUPPORTED_FORMATS.includes(value.type)
+    // ),
     intrestedArea: Yup.array()
       .min(1)
       .of(Yup.string().required())
       .required("Please Select Intrested Area!"),
   });
-
   const handleSubmit = (values, { setSubmitting }) => {
     const user_id = "id" + Math.random().toString(16).slice(2);
     const newData = {
       ...values,
       user_id,
-      imageUrl: imageResult ? imageResult : preview,
+      uploadFile: mainImageData,
     };
     if (isEdit) {
       const index = userData?.findIndex(
@@ -220,7 +254,23 @@ const SimpleForm = () => {
     } else {
       setUserData((data) => [...data, newData]);
     }
-    navigate("/userpage");
+
+    navigate("/");
+  };
+  const handleClick = () => {
+    hiddenFileInput.current.click();
+  };
+
+  const handleImageUpload = (e, index) => {
+    setUploadIndex([...uploadIndex, index]);
+    if (isEdit) {
+      const cloneData = [...mainImageData];
+      cloneData[index] = uploadFiles[index];
+      setMainImageData([...mainImageData, cloneData[index]]);
+    }
+    const cloneData = [...mainImageData];
+    cloneData[index] = uploadFiles[index];
+    setMainImageData(cloneData);
   };
 
   return (
@@ -233,6 +283,7 @@ const SimpleForm = () => {
       >
         {(formik) => (
           <form
+            className="row g-3"
             onSubmit={formik.handleSubmit}
             action="#"
             encType="multipart/form-data"
@@ -249,7 +300,6 @@ const SimpleForm = () => {
               label="Enter Password"
               name="password"
             />
-
             <Label htmlFor="gender" value="Gender" id="gender" />
             <Radio name="gender" options={radiOptions} />
 
@@ -273,47 +323,51 @@ const SimpleForm = () => {
 
             <Label value="Upload File" htmlFor="uploadFile" id="uploadFile" />
             <File
+              multiple={true}
+              style={{ width: "80%" }}
               className="form-control"
               type="file"
               name="uploadFile"
+              ref={hiddenFileInput}
               accept="image/*"
               onChange={(e) => {
-                formik.setFieldValue("uploadFile", e.target.files[0]);
-                setSelectFile(e.target.files[0]);
-                previewData(e.target.files[0]);
+                formik.setFieldValue("uploadFile", e.target.files);
+                setSelectFile(e.target.files);
+                handleFileUpload(e);
               }}
+              handleClick={handleClick}
             />
-
-            {selectFile && (
-              <React.Fragment>
-                <ReactCrop
-                  src={preview}
-                  crop={crop}
-                  onImageLoaded={setSelectFile}
-                  onChange={setCrop}
-                  onComplete={makeCroppedImage}
-                >
-                  <Image
-                    src={preview}
-                    alt="no preview available"
-                    id="uploadImage"
-                    style={{ height: "300px", width: "300px" }}
+            {!isEdit ? (
+              <>
+                {uploadFiles.map((data, index) => (
+                  <UploadImageItem
+                    {...{ index }}
+                    fileData={data}
+                    key={index}
+                    makeCroppedImage={(e) => makeCroppedImage(e, index)}
+                    imageResult={imageResult[index]}
+                    HandleImageDelete={HandleImageDelete}
+                    handleImageUpload={handleImageUpload}
+                    isUpload={uploadIndex.includes(index)}
                   />
-                </ReactCrop>
-              </React.Fragment>
+                ))}
+              </>
+            ) : (
+              <>
+                {updateData?.uploadFile?.map((data, index) => (
+                  <UploadImageItem
+                    {...{ index }}
+                    fileData={data}
+                    key={index}
+                    makeCroppedImage={(e) => makeCroppedImage(e, index)}
+                    imageResult={imageResult[index]}
+                    HandleImageDelete={HandleImageDelete}
+                    handleImageUpload={handleImageUpload}
+                    isUpload={uploadIndex.includes(index)}
+                  />
+                ))}
+              </>
             )}
-
-            {imageResult && (
-              <div className="mb-3">
-                <Image
-                  src={imageResult}
-                  id="croppedImage"
-                  alt="new cropped image"
-                  style={{ height: "300px", width: "300px" }}
-                />
-              </div>
-            )}
-
             <div className="mb-3">
               <Button
                 className="btn btn-primary"
@@ -326,7 +380,7 @@ const SimpleForm = () => {
                 type="button"
                 name="cancel"
                 handleOnClick={() => {
-                  navigate("/userpage");
+                  navigate("/");
                 }}
               />
             </div>

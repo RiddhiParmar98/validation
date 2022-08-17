@@ -6,18 +6,13 @@ import Image from "./Image";
 // import Modal from "./Modal";
 
 export const UserPage = () => {
-  // const [isShowModal, setIsShowModal] = useState(false);
   const {
     userData,
     setUserData,
     setIsEdit,
     setUpdateData,
-    setSelectFile,
-    preview,
-    setPreview,
   } = useContext(UserContext);
   let navigate = useNavigate();
-
   const handleDelete = (id) => {
     var msj = "Are you sure that you want to delete this comment?";
     if (!window.confirm(msj)) {
@@ -35,23 +30,20 @@ export const UserPage = () => {
     setUpdateData({ ...editData });
     navigate(`/edit-user/${id}`, { state: { id } });
   };
+  
 
   return (
     <>
-      {/* {isShowModal && } */}
-      <div className="container">
         <h2 className="my-4">User Details</h2>
         <Button
-          className="btn btn-success my-2"
+          className="btn btn-success mx-2"
           handleOnClick={() => {
             setIsEdit(false);
             navigate("/add-user");
-            setPreview(undefined);
-            setSelectFile(undefined);
           }}
           name="Add Data"
         />
-
+        <div className="table-responsive">
         <table className="table">
           <thead>
             <tr>
@@ -74,32 +66,23 @@ export const UserPage = () => {
                   handleDelete={handleDelete}
                   handleUpdate={handleUpdate}
                   key={index}
-                  preview={preview}
                 />
               ))}
           </tbody>
         </table>
-      </div>
-    </>
+        </div>
+      </>
   );
 };
 
 export default UserPage;
 
-export const UserItem = (props) => {
-  const {
-    fullName,
-    email,
-    gender,
-    language,
-    intrestedArea,
-    user_id,
-    imageUrl,
-  } = props.data;
-  const { handleDelete, handleUpdate } = props;
+export const UserItem = ({data, handleDelete, handleUpdate, ...props}) => {
+
+  const {fullName,email,gender,language,user_id, intrestedArea, uploadFile} = data
 
   return (
-    <tr>
+    <tr {...props} >
       <th scope="row">{props.id}</th>
       <td>{fullName}</td>
       <td>{email}</td>
@@ -107,14 +90,18 @@ export const UserItem = (props) => {
       <td>{language.join(", ")}</td>
       <td>{intrestedArea.join(", ")}</td>
       <td>
-        <Image
-          src={imageUrl}
+       {uploadFile?.length ? 
+       <>
+         {uploadFile?.map((value, index) => 
+         <Image className="m-1" key={index}
+          src={value?.croppedUrl || value?.url}
           style={{ width: "80px", height: "80px" }}
           alt="no preview available"
           id="imageUrl"
-        />
+        />)}
+       </> : null
+       }
       </td>
-
       <td>
         <Button
           className="btn btn-primary mx-2"

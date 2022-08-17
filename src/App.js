@@ -5,10 +5,10 @@ import UserPage from "./Component/UserPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
   const publicRoute = [
-    { path: "/", component: <SimpleForm /> },
+    // { path: "/add-data", component: <SimpleForm /> },
     { path: "/add-user", component: <SimpleForm /> },
     { path: "/edit-user/:id", component: <SimpleForm isEdit /> },
-    { path: "/userpage", component: <UserPage /> },
+    { path: "/", component: <UserPage /> },
   ];
   return (
     <UserProvider>

@@ -1,14 +1,21 @@
 import React from "react";
 import { ErrorMessage } from "formik";
 import TextError from "./TextError";
+import Button from "./Button";
 
-function File({ label, name, value, ...rest }) {
+function File({ label, name, value, handleClick, ...rest }, ref) {
   return (
-    <div className="mb-3">
-      <input {...{ name, id: name }} {...rest} />
+    <div className="mb-3 d-flex">
+      <input {...{ name, id: name }} ref={ref} {...rest} />
+      <Button
+        type="button"
+        className="btn btn-success mx-2 btn-md"
+        name="Add More"
+        handleOnClick={handleClick}
+      />
       <ErrorMessage {...{ name }} component={TextError} />
     </div>
   );
 }
 
-export default File;
+export default React.forwardRef(File);
