@@ -80,11 +80,20 @@ const SimpleForm = () => {
         crop[index],
         "abc.jpg"
       );
+      debugger;
       cloneData[index] = croppedImageURL;
       cloneUploadData[index] = {
         ...cloneUploadData[index],
         croppedUrl: croppedImageURL,
+        isCroppedUrlChange: false,
       };
+      if (isEdit) {
+        const tempUpdateData = [...updateData.uploadFile];
+        tempUpdateData[index] = updateData.uploadFile[index];
+        tempUpdateData[index].isCroppedUrlChange = false;
+        setUpdateData({ ...updateData, tempUpdateData });
+      }
+
       setImageResult(cloneData);
       setUploadFiles(cloneUploadData);
     }
@@ -154,11 +163,11 @@ const SimpleForm = () => {
     if (files && files[0]) {
       const url = URL.createObjectURL(files[0]);
       const file = files[0];
-      cloneData.push({ url, file });
+      cloneData.push({ url, file, isCroppedUrlChange: false });
       setUploadFiles(cloneData);
       if (isEdit) {
         const newData = [...updateData?.uploadFile];
-        newData.push({ croppedUrl: url, file });
+        newData.push({ croppedUrl: url, file, isCroppedUrlChange: false });
         setUpdateData({
           ...updateData,
           uploadFile: newData,
@@ -166,7 +175,6 @@ const SimpleForm = () => {
       }
     }
   };
-
   const HandleImageDelete = (e, index) => {
     let msg = "Are you sure you want to Delete ?";
     if (!window.confirm(msg)) return false;
@@ -265,11 +273,17 @@ const SimpleForm = () => {
     setUploadIndex([...uploadIndex, index]);
     if (isEdit) {
       const cloneData = [...mainImageData];
+      const tempUpdateData = [...updateData.uploadFile];
+      tempUpdateData[index] = updateData.uploadFile[index];
+      tempUpdateData[index].isCroppedUrlChange = true;
       cloneData[index] = uploadFiles[index];
+      cloneData[index].isCroppedUrlChange = true;
       setMainImageData([...mainImageData, cloneData[index]]);
+      setUpdateData({ ...updateData, tempUpdateData });
     }
     const cloneData = [...mainImageData];
     cloneData[index] = uploadFiles[index];
+    cloneData[index].isCroppedUrlChange = true;
     setMainImageData(cloneData);
   };
 

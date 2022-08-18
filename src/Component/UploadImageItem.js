@@ -14,7 +14,6 @@ const UploadImageItem = ({
   handleImageUpload,
   isUpload,
 }) => {
-  const {isEdit} = useContext(UserContext);
   const { selectFile } = useContext(UserContext);
   return (
     <div className="card my-2 col-10">
@@ -44,7 +43,7 @@ const UploadImageItem = ({
               className="btn btn-outline-success btn-lg mx-1"
               handleOnClick={(e) => handleImageUpload(e, index)}
               name="Upload"
-              disabled = {isUpload ? isEdit ? "" : "disabled" : ""}
+              disabled={fileData?.isCroppedUrlChange ? "disabled" : ""}
             />
             <Button
               type="button"
@@ -54,7 +53,9 @@ const UploadImageItem = ({
             />
           </div>
         </div>
-        <span class="badge text-bg-success">{isUpload ?  isEdit ? "REQUESTED": "UPLOADED" : "REQUESTED" }</span>
+        <span class="badge text-bg-success">
+          {fileData?.isCroppedUrlChange ? "UPLOADED" : "REQUESTED"}
+        </span>
       </div>
     </div>
   );

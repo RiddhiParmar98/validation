@@ -30,20 +30,19 @@ export const UserPage = () => {
     setUpdateData({ ...editData });
     navigate(`/edit-user/${id}`, { state: { id } });
   };
-  
 
   return (
     <>
-        <h2 className="my-4">User Details</h2>
-        <Button
-          className="btn btn-success mx-2"
-          handleOnClick={() => {
-            setIsEdit(false);
-            navigate("/add-user");
-          }}
-          name="Add Data"
-        />
-        <div className="table-responsive">
+      <h2 className="my-4">User Details</h2>
+      <Button
+        className="btn btn-success mx-2"
+        handleOnClick={() => {
+          setIsEdit(false);
+          navigate("/add-user");
+        }}
+        name="Add Data"
+      />
+      <div className="table-responsive">
         <table className="table">
           <thead>
             <tr>
@@ -70,19 +69,26 @@ export const UserPage = () => {
               ))}
           </tbody>
         </table>
-        </div>
-      </>
+      </div>
+    </>
   );
 };
 
 export default UserPage;
 
-export const UserItem = ({data, handleDelete, handleUpdate, ...props}) => {
-
-  const {fullName,email,gender,language,user_id, intrestedArea, uploadFile} = data
+export const UserItem = ({ data, handleDelete, handleUpdate, ...props }) => {
+  const {
+    fullName,
+    email,
+    gender,
+    language,
+    user_id,
+    intrestedArea,
+    uploadFile,
+  } = data;
 
   return (
-    <tr {...props} >
+    <tr {...props}>
       <th scope="row">{props.id}</th>
       <td>{fullName}</td>
       <td>{email}</td>
@@ -90,17 +96,20 @@ export const UserItem = ({data, handleDelete, handleUpdate, ...props}) => {
       <td>{language.join(", ")}</td>
       <td>{intrestedArea.join(", ")}</td>
       <td>
-       {uploadFile?.length ? 
-       <>
-         {uploadFile?.map((value, index) => 
-         <Image className="m-1" key={index}
-          src={value?.croppedUrl || value?.url}
-          style={{ width: "80px", height: "80px" }}
-          alt="no preview available"
-          id="imageUrl"
-        />)}
-       </> : null
-       }
+        {uploadFile?.length ? (
+          <>
+            {uploadFile?.map((value, index) => (
+              <Image
+                className="m-1"
+                key={index}
+                src={value?.croppedUrl || value?.url}
+                style={{ width: "80px", height: "80px" }}
+                alt="no preview available"
+                id="imageUrl"
+              />
+            ))}
+          </>
+        ) : null}
       </td>
       <td>
         <Button
