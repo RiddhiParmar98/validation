@@ -223,18 +223,6 @@ const SimpleForm = () => {
       .min(1)
       .of(Yup.string().required())
       .required("Required"),
-    uploadFile: Yup.mixed(),
-    // .required("A file is required")
-    // .test(
-    //   "fileSize",
-    //   "File too large",
-    //   (value) => console.log('value :>> ', value)
-    // )
-    // .test(
-    //   "fileFormat",
-    //   "Unsupported Format",
-    //   (value) => value && SUPPORTED_FORMATS.includes(value.type)
-    // ),
     intrestedArea: Yup.array()
       .min(1)
       .of(Yup.string().required())
