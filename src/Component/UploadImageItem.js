@@ -53,7 +53,7 @@ const UploadImageItem = ({
             />
           </div>
         </div>
-        <span class="badge text-bg-success">
+        <span className="badge text-bg-success">
           {fileData?.isCroppedUrlChange ? "UPLOADED" : "REQUESTED"}
         </span>
       </div>
