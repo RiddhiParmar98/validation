@@ -11,6 +11,7 @@ const UserProvider = (props) => {
       language: ["Python", "JAVA"],
       password: "Pa$$w0rd!",
       toggle: false,
+      description: "<h3><i>Riddhi Parmar</i></h3>",
       uploadFile: [
         {
           file: {
@@ -32,6 +33,7 @@ const UserProvider = (props) => {
       language: ["Javasript", "Python", "JAVA"],
       password: "Pa$$w0rd!",
       toggle: false,
+      description: "<h3><i>Riddhi Parmar</i></h3>",
       uploadFile: [
         {
           file: {

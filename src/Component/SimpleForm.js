@@ -11,9 +11,9 @@ import Radio from "./Radio";
 import Checkbox from "./Checkbox";
 import Select from "./Select";
 import File from "./File";
-
 import "react-image-crop/dist/ReactCrop.css";
 import UploadImageItem from "./UploadImageItem";
+import TextEditor from './TextEditor';
 
 const SimpleForm = () => {
   const {
@@ -33,12 +33,14 @@ const SimpleForm = () => {
   const [imageResult, setImageResult] = useState([]);
   const [mainImageData, setMainImageData] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
+ 
   const hiddenFileInput = useRef(null);
 
   useEffect(() => {
     if (isEdit) {
       setMainImageData([...updateData?.uploadFile]);
     }
+    
     // eslint-disable-next-line
   }, []);
   // const FILE_SIZE = 1024 * 1024;
@@ -149,6 +151,7 @@ const SimpleForm = () => {
         email: "",
         password: "",
         gender: "",
+        description: "",
         toggle: false,
         language: [],
         intrestedArea: [],
@@ -175,6 +178,7 @@ const SimpleForm = () => {
       }
     }
   };
+
   const HandleImageDelete = (e, index) => {
     let msg = "Are you sure you want to Delete ?";
     if (!window.confirm(msg)) return false;
@@ -187,13 +191,13 @@ const SimpleForm = () => {
         setUpdateData(cloneData);
         const newImageResult = [...imageResult];
         newImageResult.splice(index, 1);
-        uploadIndex.splice(index,1);
+        uploadIndex.splice(index, 1);
         setImageResult(newImageResult);
       } else {
         const cloneData = [...uploadFiles];
         cloneData.splice(index, 1);
         mainImageData?.splice(index, 1);
-        uploadIndex.splice(index,1);
+        uploadIndex.splice(index, 1);
         setUploadFiles(cloneData);
       }
       const newImageResult = [...imageResult];
@@ -212,10 +216,13 @@ const SimpleForm = () => {
   const validationSchema = Yup.object({
     fullName: Yup.string()
       .max(15, "Must be 15 Character or Less")
-      .required("Required"),
-    email: Yup.string().email("Invalid Email Address").required("Required"),
+      .required("FullName is Required"),
+    email: Yup.string()
+      .email("Invalid Email Address")
+      .required("Email is Required"),
+    description: Yup.string().min(1).required("Description Required"),
     password: Yup.string()
-      .required("Required")
+      .required("Password is Required")
       .min(8, "Password is too short - should be 8 chars minimum.")
       .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
     gender: Yup.string().required("gender is Required!"),
@@ -248,7 +255,7 @@ const SimpleForm = () => {
         setUserData(userData);
       }
     } else {
-      setUserData((data) => [...data, newData]);
+      setUserData((data) => [...data,newData]);
     }
 
     navigate("/");
@@ -370,6 +377,18 @@ const SimpleForm = () => {
                 ))}
               </>
             )}
+
+            <Label value="Description" htmlFor="description" id="editor" />
+            <TextEditor 
+              name="description"
+              id="editor1"
+              className="form-group"
+              value={updateData?.description || initialValues?.description}
+              handleEditiorChange={(e, editor) => {
+                console.log('editor.getData() :>> ', editor.getData());
+                formik.setFieldValue("description", editor?.getData());
+              }}
+            />
             <div className="mb-3">
               <Button
                 className="btn btn-primary"

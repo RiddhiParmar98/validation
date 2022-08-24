@@ -52,6 +52,7 @@ export const UserPage = () => {
               <th scope="col">Gender</th>
               <th scope="col">Language</th>
               <th scope="col">Intrested Area</th>
+              <th scope="col">description</th>
               <th scope="col">Preview Image</th>
               <th scope="col">Action</th>
             </tr>
@@ -85,6 +86,7 @@ export const UserItem = ({ data, handleDelete, handleUpdate, ...props }) => {
     user_id,
     intrestedArea,
     uploadFile,
+    description
   } = data;
 
   return (
@@ -95,6 +97,7 @@ export const UserItem = ({ data, handleDelete, handleUpdate, ...props }) => {
       <td>{gender}</td>
       <td>{language.join(", ")}</td>
       <td>{intrestedArea.join(", ")}</td>
+      <td><div dangerouslySetInnerHTML={{__html: description}}/></td>
       <td>
         {uploadFile?.length ? (
           <>
