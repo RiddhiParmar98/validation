@@ -82,7 +82,6 @@ const SimpleForm = () => {
         crop[index],
         "abc.jpg"
       );
-      debugger;
       cloneData[index] = croppedImageURL;
       cloneUploadData[index] = {
         ...cloneUploadData[index],
@@ -179,7 +178,7 @@ const SimpleForm = () => {
     }
   };
 
-  const HandleImageDelete = (e, index) => {
+  const handleImageDelete = (e, index) => {
     let msg = "Are you sure you want to Delete ?";
     if (!window.confirm(msg)) return false;
     else {
@@ -355,7 +354,7 @@ const SimpleForm = () => {
                     key={index}
                     makeCroppedImage={(e) => makeCroppedImage(e, index)}
                     imageResult={imageResult[index]}
-                    HandleImageDelete={HandleImageDelete}
+                    handleImageDelete={handleImageDelete}
                     handleImageUpload={handleImageUpload}
                     isUpload={uploadIndex.includes(index)}
                   />
@@ -370,7 +369,7 @@ const SimpleForm = () => {
                     key={index}
                     makeCroppedImage={(e) => makeCroppedImage(e, index)}
                     imageResult={imageResult[index]}
-                    HandleImageDelete={HandleImageDelete}
+                    handleImageDelete={handleImageDelete}
                     handleImageUpload={handleImageUpload}
                     isUpload={uploadIndex.includes(index)}
                   />

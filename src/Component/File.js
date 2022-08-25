@@ -3,7 +3,8 @@ import { ErrorMessage } from "formik";
 import TextError from "./TextError";
 import Button from "./Button";
 
-function File({ label, name, value, handleClick, ...rest }, ref) {
+function File(props, ref) {
+  const { label, name, value, handleClick, ...rest } = props
   return (
     <div className="mb-3 d-flex">
       <input {...{ name, id: name }} ref={ref} {...rest} />

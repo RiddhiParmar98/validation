@@ -10,7 +10,7 @@ const UploadImageItem = ({
   imageResult,
   fileData,
   index,
-  HandleImageDelete,
+  handleImageDelete,
   handleImageUpload,
   isUpload,
 }) => {
@@ -49,7 +49,7 @@ const UploadImageItem = ({
               type="button"
               className="btn btn-outline-danger btn-lg"
               name="Delete"
-              handleOnClick={(e) => HandleImageDelete(e, index)}
+              handleOnClick={(e) => handleImageDelete(e, index)}
             />
           </div>
         </div>
