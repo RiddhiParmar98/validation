@@ -32,29 +32,49 @@ export const UserPage = () => {
   };
 
   return (
-    <>
-      <h2 className="my-4">User Details</h2>
+    <div className="max-w-8xl w-full mx-auto mt-10 mb-1 bg-white p-8 border border-gray-300">
+      <h2 className="text-4xl font-bold text-center text-gray-600 my-2">
+        User Details
+      </h2>
       <Button
-        className="btn btn-success mx-2"
+        className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-md text-md px-5 py-2.5 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
         handleOnClick={() => {
           setIsEdit(false);
           navigate("/add-user");
         }}
         name="Add Data"
       />
-      <div className="table-responsive">
-        <table className="table">
-          <thead>
+      <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
+        <table className="w-full text-left text-gray-500 dark:text-gray-400 mb-1">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col">id</th>
-              <th scope="col">FullName</th>
-              <th scope="col">Email Id</th>
-              <th scope="col">Gender</th>
-              <th scope="col">Language</th>
-              <th scope="col">Intrested Area</th>
-              <th scope="col">description</th>
-              <th scope="col">Preview Image</th>
-              <th scope="col">Action</th>
+              <th scope="col" className="py-2 px-4">
+                id
+              </th>
+              <th scope="col" className="py-2 px-4">
+                FullName
+              </th>
+              <th scope="col" className="py-2 px-4">
+                Email Id
+              </th>
+              <th scope="col" className="py-2 px-4">
+                Gender
+              </th>
+              <th scope="col" className="py-2 px-4">
+                Language
+              </th>
+              <th scope="col" className="py-2 px-4">
+                Intrested Area
+              </th>
+              <th scope="col" className="py-2 px-4">
+                description
+              </th>
+              <th scope="col" className="py-2 px-4">
+                Preview Image
+              </th>
+              <th scope="col" className="py-2 px-4">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -71,7 +91,7 @@ export const UserPage = () => {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -90,46 +110,59 @@ export const UserItem = ({ data, handleDelete, handleUpdate, ...props }) => {
   } = data;
 
   return (
-    <tr {...props}>
-      <th scope="row">{props.id}</th>
-      <td>{fullName}</td>
-      <td>{email}</td>
-      <td>{gender}</td>
-      <td>{language.join(", ")}</td>
-      <td>{intrestedArea.join(", ")}</td>
-      <td><div dangerouslySetInnerHTML={{__html: description}}/></td>
-      <td>
-        {uploadFile?.length ? (
-          <>
-            {uploadFile?.map((value, index) => (
-              <Image
-                className="m-1"
-                key={index}
-                src={value?.croppedUrl || value?.url}
-                style={{ width: "80px", height: "80px" }}
-                alt="no preview available"
-                id="imageUrl"
-              />
-            ))}
-          </>
-        ) : null}
+    <tr
+      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+      {...props}
+    >
+      <th
+        scope="row"
+        className="py-4 px-5 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+      >
+        {props.id}
+      </th>
+      <td className="py-3 px-4">{fullName}</td>
+      <td className="py-3 px-4">{email}</td>
+      <td className="py-3 px-4">{gender}</td>
+      <td className="py-3 px-4">{language.join(", ")}</td>
+      <td className="py-3 px-4">{intrestedArea.join(", ")}</td>
+      <td className="py-3 px-4">
+        <div dangerouslySetInnerHTML={{ __html: description }} />
       </td>
-      <td>
-        <Button
-          className="btn btn-primary mx-2"
-          handleOnClick={() => {
-            handleUpdate(user_id);
-          }}
-          name="Edit"
-        />
-
-        <Button
-          className="btn btn-danger"
-          handleOnClick={() => {
-            handleDelete(user_id);
-          }}
-          name="Delete"
-        />
+      <td className="py-3 px-4">
+        <div className="flex flex-row xs:flex-wrap">
+          {uploadFile?.length ? (
+            <>
+              {uploadFile?.map((value, index) => (
+                <Image
+                  className="m-1"
+                  key={index}
+                  src={value?.croppedUrl || value?.url}
+                  style={{ width: "80px", height: "80px" }}
+                  alt="no preview available"
+                  id="imageUrl"
+                />
+              ))}
+            </>
+          ) : null}
+        </div>
+      </td>
+      <td className="py-1 px-1">
+        <div className="flex flex-row justify-start">
+          <Button
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-xs px-4 py-2.5 text-center mr-1 mb-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            handleOnClick={() => {
+              handleUpdate(user_id);
+            }}
+            name="Edit"
+          />
+          <Button
+            className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-md text-xs px-4 py-2.5 text-center mr-1 mb-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+            handleOnClick={() => {
+              handleDelete(user_id);
+            }}
+            name="Delete"
+          />
+        </div>
       </td>
     </tr>
   );

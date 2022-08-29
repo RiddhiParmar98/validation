@@ -13,6 +13,7 @@ function Checkbox(props) {
             return (
               <React.Fragment key={option.key}>
                 <input
+                  className="h-4 w-4 text-blue-300 rounded"
                   type="checkbox"
                   id={option.value}
                   {...field}

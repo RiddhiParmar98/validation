@@ -12,6 +12,7 @@ function Radio(props) {
             return (
               <React.Fragment key={option.key}>
                 <input
+                 className="h-4 w-4 border border-gray-300 bg-white"
                   type="radio"
                   id={option.value}
                   {...field}

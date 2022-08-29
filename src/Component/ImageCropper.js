@@ -13,6 +13,7 @@ const ImageCropper = ({ makeCroppedImage, fileData, index }) => {
   return (
     <React.Fragment>
       <ReactCrop
+        className="w-[50%] h-60 xs:w-full md:w-[80%] "
         src={isEdit ? fileData?.croppedUrl ?? fileData?.url : fileData?.url}
         crop={crop[index]}
         onImageLoaded={setSelectFile}
@@ -22,10 +23,11 @@ const ImageCropper = ({ makeCroppedImage, fileData, index }) => {
         onComplete={(e) => makeCroppedImage(e, index)}
       >
         <Image
+          className="w-[50%] h-60 xs:w-full"
           src={isEdit ? fileData?.croppedUrl ?? fileData?.url : fileData?.url}
           alt="no preview available"
           id={index}
-          style={{ height: "200px", width: "200px" }}
+         
         />
       </ReactCrop>
     </React.Fragment>

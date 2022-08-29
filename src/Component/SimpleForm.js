@@ -13,7 +13,8 @@ import Select from "./Select";
 import File from "./File";
 import "react-image-crop/dist/ReactCrop.css";
 import UploadImageItem from "./UploadImageItem";
-import TextEditor from './TextEditor';
+import Editor from "./Editor";
+import Header from "./Header";
 
 const SimpleForm = () => {
   const {
@@ -33,14 +34,14 @@ const SimpleForm = () => {
   const [imageResult, setImageResult] = useState([]);
   const [mainImageData, setMainImageData] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
- 
+
   const hiddenFileInput = useRef(null);
 
   useEffect(() => {
     if (isEdit) {
       setMainImageData([...updateData?.uploadFile]);
     }
-    
+
     // eslint-disable-next-line
   }, []);
   // const FILE_SIZE = 1024 * 1024;
@@ -235,6 +236,7 @@ const SimpleForm = () => {
       .required("Please Select Intrested Area!"),
   });
   const handleSubmit = (values, { setSubmitting }) => {
+    console.log("submitted");
     const user_id = "id" + Math.random().toString(16).slice(2);
     const newData = {
       ...values,
@@ -283,130 +285,167 @@ const SimpleForm = () => {
 
   return (
     <>
-      <h2 className="my-4">Fill Information</h2>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {(formik) => (
-          <form
-            className="row g-3"
-            onSubmit={formik.handleSubmit}
-            action="#"
-            encType="multipart/form-data"
+      <div className="min-h-screen bg-gray-50 flex-col justify-center">
+        <div className="max-w-4xl w-full mx-auto mt-4 bg-white p-8 border border-gray-300">
+          <Header title="Application" />
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
           >
-            <Label htmlFor="fullName" value="Enter Full Name" id="fullName" />
-            <Input className="form-control" type="text" name="fullName" />
-            <Label htmlFor="email" value="Enter Email" id="email" />
-            <Input className="form-control" type="email" name="email" />
+            {(formik) => (
+              <form
+                className="row g-3"
+                onSubmit={formik.handleSubmit}
+                action="#"
+                encType="multipart/form-data"
+              >
+                <Label
+                  htmlFor="fullName"
+                  value="Enter Full Name"
+                  id="fullName"
+                />
+                <Input
+                  className="w-full p-2 border border-gray-400 rounded mt-1"
+                  type="text"
+                  name="fullName"
+                />
+                <Label htmlFor="email" value="Enter Email" id="email" />
+                <Input
+                  className="w-full p-2 border border-gray-400 rounded mt-1"
+                  type="email"
+                  name="email"
+                />
 
-            <Label htmlFor="password" value="Enter Password" id="password" />
-            <Input
-              className="form-control"
-              type="password"
-              label="Enter Password"
-              name="password"
-            />
-            <Label htmlFor="gender" value="Gender" id="gender" />
-            <Radio name="gender" options={radiOptions} />
+                <Label
+                  htmlFor="password"
+                  value="Enter Password"
+                  id="password"
+                />
+                <Input
+                  className="w-full p-2 border border-gray-400 rounded mt-1"
+                  type="password"
+                  label="Enter Password"
+                  name="password"
+                />
+                <Label htmlFor="gender" value="Gender" id="gender" />
+                <Radio name="gender" options={radiOptions} />
 
-            <Label
-              value="Choose Your Favorite Language"
-              htmlFor="Language"
-              id="language"
-            />
-            <Checkbox name="language" options={checkBoxOptions} />
+                <Label
+                  value="Choose Your Favorite Language"
+                  htmlFor="Language"
+                  id="language"
+                />
+                <Checkbox name="language" options={checkBoxOptions} />
 
-            <Label
-              value="Interested Area "
-              htmlFor="intrestedArea"
-              id="intrestedArea"
-            />
-            <Select
-              className="form-control"
-              name="intrestedArea"
-              options={areaOption}
-            />
+                <Label
+                  value="Interested Area "
+                  htmlFor="intrestedArea"
+                  id="intrestedArea"
+                />
+                <Select
+                  className="w-full p-2 border border-gray-400 rounded mt-1"
+                  name="intrestedArea"
+                  options={areaOption}
+                />
 
-            <Label value="Upload File" htmlFor="uploadFile" id="uploadFile" />
-            <File
-              multiple={true}
-              style={{ width: "80%" }}
-              className="form-control"
-              type="file"
-              name="uploadFile"
-              ref={hiddenFileInput}
-              accept="image/*"
-              onChange={(e) => {
-                formik.setFieldValue("uploadFile", e.target.files);
-                setSelectFile(e.target.files);
-                handleFileUpload(e);
-              }}
-              handleClick={handleClick}
-            />
-            {!isEdit ? (
-              <>
-                {uploadFiles.map((data, index) => (
-                  <UploadImageItem
-                    {...{ index }}
-                    fileData={data}
-                    key={index}
-                    makeCroppedImage={(e) => makeCroppedImage(e, index)}
-                    imageResult={imageResult[index]}
-                    handleImageDelete={handleImageDelete}
-                    handleImageUpload={handleImageUpload}
-                    isUpload={uploadIndex.includes(index)}
+                <Label
+                  value="Upload File"
+                  htmlFor="uploadFile"
+                  id="uploadFile"
+                />
+                <File
+                  multiple={true}
+                  type="file"
+                  className="
+                  w-[100%]
+                  text-md
+                  file:mr-4 file:py-4 file:px-8 
+                  file:rounded-full 
+                  file:border-0
+                  first-letter:file:text-sm file:font-sans file:bg-blue-100 file:text-blue-700
+                  hover : file:cursor-pointer 
+                  hover:file:bg-amber-50 
+                  hover:file:text-amber-600
+                  rounded-full border-2"
+                  name="uploadFile"
+                  ref={hiddenFileInput}
+                  accept="image/*"
+                  onChange={(e) => {
+                    formik.setFieldValue("uploadFile", e.target.files);
+                    setSelectFile(e.target.files);
+                    handleFileUpload(e);
+                  }}
+                  handleClick={handleClick}
+                />
+                <Button
+                  type="button"
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold text-lg py-2 px-4 rounded-lg inline-flex items-center mx-2 mt-4"
+                  name="Add More"
+                  handleOnClick={handleClick}
+                />
+                {!isEdit ? (
+                  <>
+                    {uploadFiles.map((data, index) => (
+                      <UploadImageItem
+                        {...{ index }}
+                        fileData={data}
+                        key={index}
+                        makeCroppedImage={(e) => makeCroppedImage(e, index)}
+                        imageResult={imageResult[index]}
+                        handleImageDelete={handleImageDelete}
+                        handleImageUpload={handleImageUpload}
+                        isUpload={uploadIndex.includes(index)}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {updateData?.uploadFile?.map((data, index) => (
+                      <UploadImageItem
+                        {...{ index }}
+                        fileData={data}
+                        key={index}
+                        makeCroppedImage={(e) => makeCroppedImage(e, index)}
+                        imageResult={imageResult[index]}
+                        handleImageDelete={handleImageDelete}
+                        handleImageUpload={handleImageUpload}
+                        isUpload={uploadIndex.includes(index)}
+                      />
+                    ))}
+                  </>
+                )}
+
+                <Label value="Description" htmlFor="description" id="editor" />
+                <Editor
+                  name="description"                         
+                  value={initialValues?.description} 
+                  handleEditiorChange={(e, editor) => {
+                    console.log("editor.getData() :>> ", editor?.getData());
+                    formik.setFieldValue("description", editor?.getData());
+                  }}
+                />
+                <div className="mb-3">
+                  <Button
+                    className="text-white my-3 bg-blue-600 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-md px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    type="submit"
+                    name={`${isEdit ? "Update" : "Submit"} `}
                   />
-                ))}
-              </>
-            ) : (
-              <>
-                {updateData?.uploadFile?.map((data, index) => (
-                  <UploadImageItem
-                    {...{ index }}
-                    fileData={data}
-                    key={index}
-                    makeCroppedImage={(e) => makeCroppedImage(e, index)}
-                    imageResult={imageResult[index]}
-                    handleImageDelete={handleImageDelete}
-                    handleImageUpload={handleImageUpload}
-                    isUpload={uploadIndex.includes(index)}
+
+                  <Button
+                    className="text-white my-3 bg-red-600 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-md text-md px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                    type="button"
+                    name="cancel"
+                    handleOnClick={() => {
+                      navigate("/");
+                    }}
                   />
-                ))}
-              </>
+                </div>
+              </form>
             )}
-
-            <Label value="Description" htmlFor="description" id="editor" />
-            <TextEditor 
-              name="description"
-              id="editor1"
-              className="form-group"
-              value={updateData?.description || initialValues?.description}
-              handleEditiorChange={(e, editor) => {
-                console.log('editor.getData() :>> ', editor.getData());
-                formik.setFieldValue("description", editor?.getData());
-              }}
-            />
-            <div className="mb-3">
-              <Button
-                className="btn btn-primary"
-                type="submit"
-                name={`${isEdit ? "Update" : "Submit"} `}
-              />
-
-              <Button
-                className="btn btn-danger mx-2"
-                type="button"
-                name="cancel"
-                handleOnClick={() => {
-                  navigate("/");
-                }}
-              />
-            </div>
-          </form>
-        )}
-      </Formik>
+          </Formik>
+        </div>
+      </div>
     </>
   );
 };
